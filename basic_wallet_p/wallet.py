@@ -1,12 +1,20 @@
 import requests
 
 class Wallet():
+    """
+        Initialize with an ID.
+        Uses localhost:5000 as server by default.
+        Able to change ID and server
+        Once class is initialized, update chain,
+         then update balance.
+        Once you've made those updates, you can
+         get your balance.
+    """
     def __init__(self, id):
         self.id = id
         self.chain = None
         self.server = "http://localhost:5000"
         self.balance = 0
-
 
     # SETTER METHODS
     def change_id(self, id):
@@ -16,8 +24,10 @@ class Wallet():
         self.server = server
     
     def update_chain(self):
+        # Get chain from server
         r = requests.get(url=self.server + "/chain")
         
+        # Check for non-json response
         try:
             data = r.json()
         except ValueError:
@@ -26,6 +36,7 @@ class Wallet():
             print(r)
             return
         
+        # If chain in response, set object's chain
         if 'chain' in data:
             self.chain = data['chain']
         else:
@@ -41,7 +52,6 @@ class Wallet():
                 for transaction in transactions:
                     if transaction['recipient'] == self.id:
                         self.balance += transaction['amount']
-    
 
     # GETTER METHODS
     def get_balance(self):
