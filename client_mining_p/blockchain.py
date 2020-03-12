@@ -145,7 +145,19 @@ def mine():
 
     print("INSIDE THE MINE")
 
-    data = request.get_json()
+    try:
+        data = request.get_json()
+    except ValueError:
+        print("Error:  Non-json response")
+        print("Response returned:")
+        print(data)
+        return
+    required = ['proof', 'id']
+
+    # Brian's way of doing it. I kind of like it more.
+    # if not all(k in data for k in required):
+    #     return jsonify({'message': "ERROR: Proof and ID required"}), 400 
+
     if not data['proof'] or not data['id']:
         return jsonify({'message': "ERROR: Proof and ID required"}), 400
 
